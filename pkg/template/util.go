@@ -2,7 +2,6 @@ package template
 
 import (
 	"net/url"
-	"path/filepath"
 	"strings"
 )
 
@@ -23,6 +22,10 @@ func getURL(root, rel string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	u.Path = filepath.Clean(filepath.Join(filepath.Dir(u.Path), rel))
+	urel, err := url.Parse(rel)
+	if err != nil {
+		return "", err
+	}
+	u = u.ResolveReference(urel)
 	return u.String(), nil
 }
